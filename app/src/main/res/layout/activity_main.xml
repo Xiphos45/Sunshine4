@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="app.cominjohnsawickitrkhp_identity_photo.linkedin.httpswww.sunshine4.MainActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:text="Zip Code"
+        android:ems="10"
+        android:hint="Zip Code"
+        android:id="@+id/enterZip" />
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="app.cominjohnsawickitrkhp_identity_photo.linkedin.httpswww.sunshine4.ForecastFragment"
+        android:layout_below="@+id/enterZip"
+        android:layout_marginBottom="36dp"
+        android:id="@+id/fragment1"
+        tools:layout="@layout/forecast_fragment"/>
+
+</RelativeLayout>
