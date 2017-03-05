@@ -29,12 +29,16 @@ import java.net.URL;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ForecastFragment extends Fragment{
     ArrayList<String> locations;
     public ArrayAdapter<String> arrayAdapter;
-    String[] weather;
+    public ForecastFragment(){
+
+    }
+    public String[] weather;
     public String[] formatWeather = new String[10];
     @Nullable
     @Override
@@ -63,23 +67,23 @@ public class ForecastFragment extends Fragment{
                 "Sat - Sunny 76-68"};
 
         ListView listView = (ListView)view.findViewById(R.id.arrayView);
+
         arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, weather);        //Android defined layout with only 1 text view
+
         listView.setAdapter(arrayAdapter);
 
-        return view;
 
 
+
+
+    return view;
     }
-
-
-
 }
-
 class FetchWeatherTask extends AsyncTask <String, Void, String[]> {          //modified first void to string to accept input type, change third data tpye for return
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
-   public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip="+94043+",us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39" ;
-   //public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip=94043,us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39";
-   public String[] formattedString = new String[7];
+    public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip="+94043+",us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39" ;
+    //public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip=94043,us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39";
+    public String[] formattedString = new String[7];
     @Override
     protected String[] doInBackground(String... params) {   //change from void to change for return data type
 
@@ -91,18 +95,20 @@ class FetchWeatherTask extends AsyncTask <String, Void, String[]> {          //m
 
 
 
-                Log.d("JSON", jsonString);
-                JSONObject weather = new JSONObject(jsonString);
-                JSONArray days = weather.getJSONArray("list");
-                for (int i = 0; i < days.length(); i++) {
-                    JSONObject dayInfo = days.getJSONObject(i);
-                    Log.d("DT ", dayInfo.getString("dt"));
-                    JSONObject temp = dayInfo.getJSONObject("temp");
-                    //Log.d("Max temp", temp.getString("max"));
-                    formattedString[i]=temp.getString("max");
-                    //locations.add(temp.getString("max"));
+            Log.d("JSON", jsonString);
+            JSONObject weather = new JSONObject(jsonString);
+            JSONArray days = weather.getJSONArray("list");
+            for (int i = 0; i < days.length(); i++) {
+                JSONObject dayInfo = days.getJSONObject(i);
+                Log.d("DT ", dayInfo.getString("dt"));
+                JSONObject temp = dayInfo.getJSONObject("temp");
+                //Log.d("Max temp", temp.getString("max"));
+                formattedString[i]=temp.getString("max");
 
-                }
+
+                //locations.add(temp.getString("max"));
+
+            }
         }catch(MalformedURLException e){
             e.printStackTrace();
         }catch(IOException e){
@@ -110,15 +116,19 @@ class FetchWeatherTask extends AsyncTask <String, Void, String[]> {          //m
         }catch(JSONException e){
             e.printStackTrace();
         }
-        return formattedString;
+        return formattedString; //value sent to onPostExecute...I hope
 
     }
 
 
     @Override
     protected void onPostExecute(String[] result){
-    super.onPostExecute(result);
-        Log.d("Max temp", "on post execute");
+        super.onPostExecute(result);
+
+        if(result!=null){
+            Log.d("Max temp", "on post execute");
+        }
+
     }
 
 }
