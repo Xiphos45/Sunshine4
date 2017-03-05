@@ -10,14 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="app.cominjohnsawickitrkhp_identity_photo.linkedin.httpswww.sunshine4.MainActivity">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:text="Zip Code"
-        android:ems="10"
-        android:hint="Zip Code"
-        android:id="@+id/enterZip" />
+
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

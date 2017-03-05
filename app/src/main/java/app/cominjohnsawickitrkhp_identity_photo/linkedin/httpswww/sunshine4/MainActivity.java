@@ -22,31 +22,6 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.debug_menu, menu);
         return true;
     }
-
-
-
-
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        menuOption = item.getItemId();
-        switch (item.getItemId()) {
-            case R.id.refresh_item:
-                //newGame();
-
-
-                Toast.makeText(this, "refresh",Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.restart_item:
-                //showHelp();
-                Toast.makeText(this, "restart",Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {       //three dots on the top of the screen
         super.onOptionsItemSelected(item);

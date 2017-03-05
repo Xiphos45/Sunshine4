@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,11 +36,11 @@ import java.util.List;
 public class ForecastFragment extends Fragment{
     ArrayList<String> locations;
     public ArrayAdapter<String> arrayAdapter;
-    public ForecastFragment(){
-
-    }
+    public ForecastFragment(){}
     public String[] weather;
+    EditText zipEditText;
     public String[] formatWeather = new String[10];
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -60,7 +61,7 @@ public class ForecastFragment extends Fragment{
         setHasOptionsMenu(true);
        weather = new String[] {
                 "Today - Sunny - 88/63",
-                "Tomorrow - Froggy - 70/46",
+                "Tomorrow - Foggy - 70/46",
                 "Weds - Cloudy 72-63",
                 "Thurs - Rainy 64-51",
                 "Fri - Foggy - 70/46",
@@ -128,7 +129,5 @@ class FetchWeatherTask extends AsyncTask <String, Void, String[]> {          //m
         if(result!=null){
             Log.d("Max temp", "on post execute");
         }
-
     }
-
 }
