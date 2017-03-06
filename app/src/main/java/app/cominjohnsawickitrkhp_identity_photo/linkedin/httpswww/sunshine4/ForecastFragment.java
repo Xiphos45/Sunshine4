@@ -30,6 +30,7 @@ import java.net.URL;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -40,94 +41,102 @@ public class ForecastFragment extends Fragment{
     public String[] weather;
     EditText zipEditText;
     public String[] formatWeather = new String[10];
-
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.debug_menu, menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+        if(id == R.id.refresh_item){
+            FetchWeatherTask weatherTask = new FetchWeatherTask();
+            weatherTask.execute("77020"); //sends the zip code to async task to use in the URL
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        //return super.onCreateView(inflater, container, savedInstanceState);
-    /*
+            //return super.onCreateView(inflater, container, savedInstanceState);
+        /*
 
 
-        ArrayList<DailyWeather> theWeatherToday = new ArrayList<DailyWeather>();
+            ArrayList<DailyWeather> theWeatherToday = new ArrayList<DailyWeather>();
 
-        theWeatherToday.add(new DailyWeather(R.drawable.sunicon, "Monday", "Cloudy", "79", "60"));
-        ListView listView = (ListView)view.findViewById(R.id.arrayView);
-        DailyWeatherAdapter adapter =new DailyWeatherAdapter(getActivity().getApplicationContext(), theWeatherToday);
-        listView.setAdapter(adapter);
-        */
-        View view = inflater.inflate(R.layout.forecast_fragment, container, false);     //add the fragment to the layout
-        setHasOptionsMenu(true);
-       weather = new String[] {
-                "Today - Sunny - 88/63",
-                "Tomorrow - Foggy - 70/46",
-                "Weds - Cloudy 72-63",
-                "Thurs - Rainy 64-51",
-                "Fri - Foggy - 70/46",
-                "Sat - Sunny 76-68"};
-
-        ListView listView = (ListView)view.findViewById(R.id.arrayView);
-
-        arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, weather);        //Android defined layout with only 1 text view
-
-        listView.setAdapter(arrayAdapter);
+            theWeatherToday.add(new DailyWeather(R.drawable.sunicon, "Monday", "Cloudy", "79", "60"));
+            ListView listView = (ListView)rootView.findViewById(R.id.arrayView);
+            DailyWeatherAdapter adapter =new DailyWeatherAdapter(getActivity().getApplicationContext(), theWeatherToday);
+            listView.setAdapter(adapter);
+            */
 
 
-
-
-
-    return view;
+           weather = new String[] {
+                    "Today - Sunny - 88/63",
+                    "Tomorrow - Foggy - 70/46",
+                    "Weds - Cloudy 72-63",
+                    "Thurs - Rainy 64-51",
+                    "Fri - Foggy - 70/46",
+                    "Sat - Sunny 76-68"};
+            List<String> weekForecast = new ArrayList<String>(Arrays.asList(weather));
+            arrayAdapter = new ArrayAdapter<String>(getActivity(),R.layout.weather_listview,R.id.weather_text_view, weekForecast);
+            View rootView = inflater.inflate(R.layout.forecast_fragment, container, false);     //add the fragment to the layout
+            ListView listView = (ListView)rootView.findViewById(R.id.arrayView);
+            //arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, weather);        //Android defined layout with only 1 text rootView
+            listView.setAdapter(arrayAdapter);
+        return rootView;
     }
-}
-class FetchWeatherTask extends AsyncTask <String, Void, String[]> {          //modified first void to string to accept input type, change third data tpye for return
-    private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
-    public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip="+94043+",us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39" ;
-    //public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip=94043,us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39";
-    public String[] formattedString = new String[7];
-    @Override
-    protected String[] doInBackground(String... params) {   //change from void to change for return data type
+    class FetchWeatherTask extends AsyncTask <String, Void, String[]> {          //modified first void to string to accept input type, change third data tpye for return
+        private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
+        public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip="+94043+",us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39" ;
+        //public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip=94043,us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39";
+        public String[] formattedString = new String[7];
+        @Override
+        protected String[] doInBackground(String... params) {   //change from void to change for return data type
 
-        try {
-            URL theURL = new URL(SERVER_URL);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(theURL.openConnection().getInputStream(), "UTF-8"));
-            String jsonString = reader.readLine();
-
-
-
-
-            Log.d("JSON", jsonString);
-            JSONObject weather = new JSONObject(jsonString);
-            JSONArray days = weather.getJSONArray("list");
-            for (int i = 0; i < days.length(); i++) {
-                JSONObject dayInfo = days.getJSONObject(i);
-                Log.d("DT ", dayInfo.getString("dt"));
-                JSONObject temp = dayInfo.getJSONObject("temp");
-                //Log.d("Max temp", temp.getString("max"));
-                formattedString[i]=temp.getString("max");
-
-
-                //locations.add(temp.getString("max"));
-
+            try {
+                URL theURL = new URL(SERVER_URL);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(theURL.openConnection().getInputStream(), "UTF-8"));
+                String jsonString = reader.readLine();
+                Log.d("JSON", jsonString);
+                JSONObject weather = new JSONObject(jsonString);
+                JSONArray days = weather.getJSONArray("list");
+                for (int i = 0; i < days.length(); i++) {
+                    JSONObject dayInfo = days.getJSONObject(i);
+                    Log.d("DT ", dayInfo.getString("dt"));
+                    JSONObject temp = dayInfo.getJSONObject("temp");
+                    //Log.d("Max temp", temp.getString("max"));
+                    formattedString[i]=temp.getString("max");
+                }
+            }catch(MalformedURLException e){
+                e.printStackTrace();
+            }catch(IOException e){
+                e.printStackTrace();
+            }catch(JSONException e){
+                e.printStackTrace();
             }
-        }catch(MalformedURLException e){
-            e.printStackTrace();
-        }catch(IOException e){
-            e.printStackTrace();
-        }catch(JSONException e){
-            e.printStackTrace();
+            return formattedString; //value sent to onPostExecute...I hope
+
         }
-        return formattedString; //value sent to onPostExecute...I hope
-
-    }
 
 
-    @Override
-    protected void onPostExecute(String[] result){
-        super.onPostExecute(result);
-
-        if(result!=null){
-            Log.d("Max temp", "on post execute");
+        @Override
+        protected void onPostExecute(String[] result){
+            if(result!=null){
+                arrayAdapter.clear();
+                Log.d("Max temp", "on post execute");
+                for(String dayForeCastStr: result){
+                  arrayAdapter.add("one");
+                }
+            }
         }
     }
+
 }
