@@ -31,6 +31,7 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 
@@ -98,6 +99,13 @@ public class ForecastFragment extends Fragment{
         public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip="+94043+",us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39" ;
         //public static final String SERVER_URL="http://api.openweathermap.org/data/2.5/forecast/daily?zip=94043,us&units=metric&cnt=7&APPID=36ef9d0845139b59cdc1be9d83142b39";
         public String[] formattedString = new String[7];
+        private String formatHighLows(String high, String low) {
+            // For presentation, assume the user doesn't care about tenths of a degree.
+            long roundedHigh = Math.round(Double.parseDouble(high));
+            long roundedLow = Math.round(Double.parseDouble(low));
+            String highLowStr = roundedHigh + "/" + roundedLow;
+            return highLowStr;
+        }
         @Override
         protected String[] doInBackground(String... params) {   //change from void to change for return data type
 
@@ -108,12 +116,25 @@ public class ForecastFragment extends Fragment{
                 Log.d("JSON", jsonString);
                 JSONObject weather = new JSONObject(jsonString);
                 JSONArray days = weather.getJSONArray("list");
+                Date date= new Date();
+                Date date2 =new Date();
+                String dayOfWeek, main, max, min, composite;
+                int maxInt, minInt;
                 for (int i = 0; i < days.length(); i++) {
+                    date2.setTime(date.getTime()+i*24*60*60*1000);  //increment my day by multiplying by milliseconds
+                    dayOfWeek =String.format("%ta %<tb %<td", date2);
                     JSONObject dayInfo = days.getJSONObject(i);
                     Log.d("DT ", dayInfo.getString("dt"));
                     JSONObject temp = dayInfo.getJSONObject("temp");
+                    max=temp.getString("max");
+                    min = temp.getString("min");
+                    JSONArray weatherJSON = dayInfo.getJSONArray("weather");
+                    JSONObject weatherInfo = weatherJSON.getJSONObject(0);
+                    main = weatherInfo.getString("main");
+                    composite =dayOfWeek+" - "+main+" - "+ formatHighLows(max,min);
                     //Log.d("Max temp", temp.getString("max"));
-                    formattedString[i]=temp.getString("max");
+                    //formattedString[i]=temp.getString("max");
+                    formattedString[i]=composite;
                 }
             }catch(MalformedURLException e){
                 e.printStackTrace();
@@ -133,7 +154,7 @@ public class ForecastFragment extends Fragment{
                 arrayAdapter.clear();
                 Log.d("Max temp", "on post execute");
                 for(String dayForeCastStr: result){
-                  arrayAdapter.add("one");
+                  arrayAdapter.add(dayForeCastStr);
                 }
             }
         }
