@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -92,6 +93,14 @@ public class ForecastFragment extends Fragment{
             ListView listView = (ListView)rootView.findViewById(R.id.arrayView);
             //arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, weather);        //Android defined layout with only 1 text rootView
             listView.setAdapter(arrayAdapter);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {  //position has the row clicked to show details
+                        String oneForecast = arrayAdapter.getItem(position);
+                        Toast.makeText(getActivity(),oneForecast, Toast.LENGTH_SHORT).show();
+                }
+            });
         return rootView;
     }
     class FetchWeatherTask extends AsyncTask <String, Void, String[]> {          //modified first void to string to accept input type, change third data tpye for return
